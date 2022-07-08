@@ -2,22 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 # Copyright(c) 2018 Intel Corporation. All rights reserved.
 
-insert_module() {
-
-    local MODULE="$1"; shift
-
-    if modinfo "$MODULE" &> /dev/null ; then
-        printf 'MODPROBE\t%s\t\t' "$MODULE"
-        printf '%s ' "$@"
-        printf '\n'
-        # If sudo is slow, it's probably because the 'account' service
-        # of the pam_unix.so module. Its version 1.5.1-7.fc34 tries to
-        # close() all file descriptors from 65535 to 0.
-        sudo modprobe "$MODULE" "$@"
-    else
-        printf 'SKIP    \t%s \t(not in tree)\n' "$MODULE"
-    fi
-}
+source "$TOPDIR"/tools/kmod/lib.sh
 
 # Test sudo first, not after dozens of SKIP
 sudo true
