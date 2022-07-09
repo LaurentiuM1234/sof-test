@@ -102,7 +102,9 @@ function func_exit_handler()
 
     stop_test || exit_status=1
 
-    storage_checks || exit_status=1
+    if [ ! "$SKIP_STORAGE_CHECKS" -eq 1 ]; then
+        storage_checks || exit_status=1
+    fi
 
     if [[ "$KERNEL_CHECKPOINT" =~ ^[0-9]{10} ]]; then
         # Do not collect the entire duration of the test but only the

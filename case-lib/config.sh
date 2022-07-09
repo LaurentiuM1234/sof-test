@@ -81,3 +81,5 @@ SOF_TEST_INTERVAL=${SOF_TEST_INTERVAL:-5}
 # Refer to: https://github.com/thesofproject/sof-test/issues/471 and
 # https://github.com/thesofproject/sof-test/issues/913 for more information.
 FALLBACK_TO_PROC=${FALLBACK_TO_PROC:-false}
+
+SKIP_STORAGE_CHECKS=${SKIP_STORAGE_CHECKS:-0}
