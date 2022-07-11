@@ -48,10 +48,14 @@ OPT_HAS_ARG['d']=1         OPT_VAL['d']=3
 OPT_NAME['p']='pulseaudio'   OPT_DESC['p']='disable pulseaudio on the test process'
 OPT_HAS_ARG['p']=0             OPT_VAL['p']=1
 
+OPT_NAME['m']='platform'    OPT_DESC['m']='platform on which the script is called'
+OPT_HAS_ARG['m']=1              OPT_VAL['m']="intel"
+
 func_opt_parse_option "$@"
 tplg=${OPT_VAL['t']}
 loop_cnt=${OPT_VAL['l']}
 pb_duration=${OPT_VAL['d']}
+platform=${OPT_VAL['m']}
 
 func_pipeline_export "$tplg" "type:playback"
 
@@ -72,7 +76,7 @@ do
 
     # logic: if this case disables pulseaudio, the sub case does not need to disable pulseaudio
     # if this case does not need to disable pulseaudio, the subcase also does not need to disable pluseaudio
-    "$case_dir"/check-kmod-load-unload.sh -l 1 -p ||
+    "$case_dir"/check-kmod-load-unload.sh -l 1 -p -m $platform ||
         die "kmod reload failed"
 
     dlogi "wait dsp power status to become suspended"

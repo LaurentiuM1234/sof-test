@@ -35,10 +35,14 @@ OPT_HAS_ARG['l']=1         OPT_VAL['l']=2
 OPT_NAME['p']='pulseaudio'   OPT_DESC['p']='disable pulseaudio on the test process'
 OPT_HAS_ARG['p']=0             OPT_VAL['p']=1
 
+OPT_NAME['m']='platform'    OPT_DESC['m']='platform on which the script is called'
+OPT_HAS_ARG['m']=1              OPT_VAL['m']="intel"
+
 func_opt_parse_option "$@"
 setup_kernel_check_point
 
 loop_cnt=${OPT_VAL['l']}
+platform=${OPT_VAL['m']}
 
 PATH="${PATH%%:*}/kmod:$PATH"
 func_lib_check_sudo 'unloading modules'
@@ -74,7 +78,7 @@ do
     done
 
     dlogi "run kmod/sof-kmod-remove.sh"
-    "$TOPDIR"/tools/kmod/sof_remove.sh || die "remove modules error"
+    "$TOPDIR"/tools/kmod/sof_remove.sh $platform || die "remove modules error"
 
     ## - 1a: check for errors after removal
     dlogi "checking for general errors after kmod unload with sof-kernel-log-check tool"
@@ -83,7 +87,7 @@ do
 
     setup_kernel_check_point
     dlogi "run kmod/sof_insert.sh"
-    "$TOPDIR"/tools/kmod/sof_insert.sh || die "insert modules error"
+    "$TOPDIR"/tools/kmod/sof_insert.sh $platform || die "insert modules error"
 
     ## - 2a: check for errors after insertion
     dlogi "checking for general errors after kmod insert with sof-kernel-log-check tool"
