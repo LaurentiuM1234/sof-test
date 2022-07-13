@@ -197,8 +197,9 @@ storage_checks()
     local platf; platf=$(sof-dump-status.py -p)
 
     case "$platf" in
-        # Some cheap and old BYTs with eMMC do 2MB/s write or less!
-        byt) megas=4 ; max_sync=25 ;;
+        # BYT Minnowboards run from SD cards.
+        # BSW Cyan has pretty bad eMMC too.
+        byt|cht) megas=4 ; max_sync=25 ;;
         *) megas=100; max_sync=7 ;;
     esac
 
@@ -348,10 +349,11 @@ func_lib_start_log_collect()
 
     # The logger does not like empty '' arguments and $logopt can be
     # shellcheck disable=SC2206
-    local loggerCmd=("$SOFLOGGER" $logopt -l "$ldcFile" -o "$logfile")
+    local loggerCmd=("$SOFLOGGER" $logopt -l "$ldcFile")
     dlogi "Starting ${loggerCmd[*]}"
     # Cleaned up by func_exit_handler() in hijack.sh
-    sudo "${loggerCmd[@]}" &
+    # shellcheck disable=SC2024
+    sudo "${loggerCmd[@]}" > "$logfile" &
 }
 
 # Calling this function is often a mistake because the error message
@@ -656,7 +658,7 @@ logger_disabled()
     # ... across all tests at once.
     # In the future we should support SOF_LOGGING=etrace (only), see
     # sof-test#726
-    if [ "x$SOF_LOGGING" == 'xnone' ]; then
+    if [ "$SOF_LOGGING" == 'none' ]; then
         dlogi 'SOF logs collection globally disabled by SOF_LOGGING=none'
         return 0
     fi
